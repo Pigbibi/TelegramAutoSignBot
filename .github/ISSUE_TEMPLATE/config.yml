@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Support guide
+    url: https://github.com/Pigbibi/TelegramAutoSignBot/blob/main/SUPPORT.md
+    about: Read this before opening a usage question.
+  - name: Security policy
+    url: https://github.com/Pigbibi/TelegramAutoSignBot/blob/main/SECURITY.md
+    about: Do not disclose vulnerabilities or account credentials publicly.

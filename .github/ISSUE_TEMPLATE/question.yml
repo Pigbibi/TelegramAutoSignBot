@@ -1,0 +1,23 @@
+name: Usage question
+description: Ask for help with a documented deployment
+title: "[Question]: "
+labels: [question]
+body:
+  - type: checkboxes
+    attributes:
+      label: Before submitting
+      options:
+        - label: I read the README and support guide and searched existing issues.
+          required: true
+        - label: I removed session strings, API credentials, targets, and private messages.
+          required: true
+  - type: textarea
+    attributes:
+      label: Question
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: What I already checked
+    validations:
+      required: true
