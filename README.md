@@ -35,6 +35,10 @@ The workflow starts at `00:00 UTC` every day. The script waits a random 1–5
 minutes before connecting and 2–5 seconds between targets. These delays reduce
 burst traffic but are not an anti-abuse guarantee.
 
+Runs are serialized so that a delayed schedule or manual trigger cannot overlap
+another check-in. Each run is capped at 20 minutes to avoid leaving a stalled
+Telegram connection active indefinitely.
+
 ## Configuration
 
 Add these repository secrets:
