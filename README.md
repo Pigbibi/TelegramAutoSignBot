@@ -94,9 +94,12 @@ configuration changes.
 Edit the cron expression in `.github/workflows/main.yml` to change the schedule.
 GitHub Actions cron uses UTC and scheduled jobs may start late.
 
-Run records are stored in `checkin.log` on the `logs` branch. They list target
-usernames and commands but do not prove that a destination bot accepted or
-processed a command.
+Run records are stored in `checkin.log` on the `logs` branch, including partial
+runs that exit with an error. They contain only counts and a timestamp, not
+target usernames or commands. `submitted` means the send call returned, not
+that a destination bot accepted a check-in. Target-specific failures allow the
+next target to run; account/rate-limit failures and unknown transport outcomes
+stop the batch without automatic resending. Any failure keeps a nonzero exit.
 
 ## Local validation
 
