@@ -2,123 +2,54 @@
 
 [English](README.md)
 
-[![Workflow](https://github.com/Pigbibi/TelegramAutoSignBot/actions/workflows/main.yml/badge.svg)](https://github.com/Pigbibi/TelegramAutoSignBot/actions/workflows/main.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+使用 Telethon 和 GitHub Actions，定时通过 Telegram 用户账户向少量指定机器人发送命令。
 
-使用 Telethon 和 GitHub Actions，让 Telegram 用户账号定时向配置的 bot 发送命令。
+项目使用用户会话，而非 Telegram Bot API。会话字符串具有账户访问权限，必须保密；仅用于 Telegram 和目标机器人允许的自动化操作。
 
-## 重要说明
+## 快速开始
 
-本项目自动操作的是个人 Telegram 账号，不是 Bot API 账号。Telethon session string
-具备账号访问能力，必须像密码一样保护。随机延迟不能保证 Telegram 或目标 bot 会
-允许自动化操作。建议使用私有部署、控制目标数量，并遵守 Telegram 服务条款和各
-目标 bot 的规则。
+1. 创建私有部署副本，检查[工作流](.github/workflows/main.yml)。
+2. 获取自己的 Telegram 应用凭据，在可信设备上生成 Telethon StringSession。
+3. 在 **Settings → Secrets and variables → Actions** 添加以下配置。
+4. 运行 **Telegram Auto Sign**，并到 Telegram 对话中确认结果。
 
-## 工作流程
+| 配置 | 存储位置 | 用途 |
+| --- | --- | --- |
+| `API_ID` | Secret | Telegram 应用 ID |
+| `API_HASH` | Secret | Telegram 应用 hash |
+| `SESSION_STRING` | Secret | 用户账户会话字符串 |
+| `BOT_CONFIG` | Variable | 逗号分隔的 `机器人用户名:命令` |
 
-```text
-GitHub Actions 每日定时任务
-        │
-        ▼
-Telethon 打开配置的用户会话
-        │
-        ▼
-按顺序向 BOT_CONFIG 目标发送命令
-        │
-        ▼
-在 logs 分支追加运行记录
-```
-
-workflow 每天 `00:00 UTC` 启动。脚本连接前随机等待 1–5 分钟，每个目标之间随机
-等待 2–5 秒。延迟只能减少集中请求，不能作为规避风控的保证。
-
-workflow 会串行执行，避免延迟的定时任务与手动任务重叠签到。单次运行最长 20
-分钟，防止 Telegram 连接异常时长时间占用 runner。
-
-## 配置
-
-添加以下 GitHub Actions secrets：
-
-| Secret | 用途 |
-| --- | --- |
-| `API_ID` | 从 `my.telegram.org` 获取的 Telegram application ID |
-| `API_HASH` | Telegram application hash |
-| `SESSION_STRING` | 用户账号的 Telethon StringSession 凭据 |
-
-添加以下 repository variable：
-
-| Variable | 格式 |
-| --- | --- |
-| `BOT_CONFIG` | 逗号分隔的 `bot_username:command` |
-
-示例：
+目标配置示例：
 
 ```text
-@bot1:/qd,@bot2:sign
-@bot1:/qd,@bot2:sign,@bot3
+@example_bot:/qd,@another_bot:sign
 ```
 
-没有填写命令的目标默认使用 `/qd`。其他命令会原样发送，脚本不会自动补 `/`。
+省略命令时使用 `/qd`；其他命令按配置原样发送，不自动补斜杠。不要将会话字符串输出到公开日志，也不要通过不可信网站生成。
 
-## 创建 session string
+## 运行时间与失败处理
 
-在可信电脑上安装 Telethon，使用自己的 Telegram API 凭据创建 StringSession。
-不要在不可信网站或仓库提供的脚本中生成会话。
+默认每天 00:00 UTC 运行，启动后随机等待 1–5 分钟，目标之间间隔 2–5 秒。运行互斥，最长 20 分钟。随机延迟不代表平台允许自动化。
 
-生成后只把它保存为 Actions 的 `SESSION_STRING` secret。不要写进 workflow、issue、
-日志或截图。
+单个目标的错误允许继续处理后续目标；账户错误、限流和传输结果未知会停止批次，不自动重发。任意失败都会返回非零退出码。
 
-## 部署
+`logs` 分支的 `checkin.log` 记录时间和计数，包括部分失败。`submitted` 仅表示发送调用已返回，不代表对方机器人接受签到。更新日志分支需要 `contents: write` 权限。
 
-1. 为账号专属部署创建私有 fork 或私有副本。
-2. 添加凭据前先审查 `.github/workflows/main.yml`。
-3. 把 `API_ID`、`API_HASH` 和 `SESSION_STRING` 添加为 Actions secrets。
-4. 把 `BOT_CONFIG` 添加为 Actions variable。
-5. 确认 workflow 的 `GITHUB_TOKEN` 可以写入仓库，以便更新 `logs` 分支。
-6. 启用 Actions，手动运行一次 **Telegram Auto Sign**。
-7. 回到 Telegram 检查目标 bot 会话。
+## 开发与排障
 
-公开源码仓库不包含账号配置。账号专属部署使用私有仓库，可以降低日志或后续配置
-改动造成意外泄露的风险。
-
-## 运行时间与日志
-
-修改 `.github/workflows/main.yml` 中的 cron 可以调整时间。GitHub Actions cron 使用
-UTC，定时任务可能晚于配置时间启动。
-
-运行记录保存在 `logs` 分支的 `checkin.log`，失败批次也保留部分记录。日志只包含
-计数和时间，不包含目标用户名或命令。`submitted` 仅表示发送调用返回，不证明签到
-成功。目标级错误会继续下一目标；账号、限流及结果不明的传输错误会停止批次，不
-自动重发。任何失败均保持非零退出。
-
-## 本地检查
-
-不连接 Telegram，仅检查 Python 语法：
+按[离线测试工作流](.github/workflows/offline-regression.yml)配置 Python 和 Telethon，再运行：
 
 ```bash
-python -m py_compile main.py
+python -m unittest discover -s tests
 ```
 
-直接运行 `main.py` 需要真实凭据并会发送真实消息。必须联调时，请使用独立测试账号
-和测试 bot。
+测试会模拟 Telegram 访问。使用真实配置运行 `main.py` 会发送消息。发送结果不明时，先检查 Telegram 再决定是否重跑；会话凭据泄露时撤销该会话。
 
-## 安全
+## 支持与贡献
 
-- 把 `SESSION_STRING` 当作完整账号凭据保护。
-- 条件允许时使用权限和联系人最少的独立 Telegram 账号。
-- 在带凭据的 fork 中批准 workflow 改动前，逐行检查差异。
-- Actions 日志和 artifact 中不得出现 session 或私有聊天内容。
-- 怀疑泄露时，立即在 Telegram 中撤销对应活跃会话。
-- 不接受打印环境变量或 session 数据的代码改动。
-
-安全问题请按 [SECURITY.md](SECURITY.md) 报告。
-
-## 贡献与支持
-
-提交改动前请阅读 [CONTRIBUTING.md](CONTRIBUTING.md)。使用问题和 bug 报告渠道见
-[SUPPORT.md](SUPPORT.md)。参与社区时请遵守
-[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)。
+[问题与支持](SUPPORT.md) · [贡献指南](CONTRIBUTING.md) · [安全问题](SECURITY.md) · [行为准则](CODE_OF_CONDUCT.md)
 
 ## 许可证
 
-本项目使用 [MIT License](LICENSE)。
+[MIT](LICENSE)。

@@ -2,133 +2,54 @@
 
 [简体中文](README_CN.md)
 
-[![Workflow](https://github.com/Pigbibi/TelegramAutoSignBot/actions/workflows/main.yml/badge.svg)](https://github.com/Pigbibi/TelegramAutoSignBot/actions/workflows/main.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+Send scheduled commands from a Telegram user account to a small, configured list of bots using Telethon and GitHub Actions.
 
-Use a Telegram user account to send scheduled commands to configured bots with
-Telethon and GitHub Actions.
+This uses a user session, not the Telegram Bot API. A session string grants account access: keep it private and use only automation permitted by Telegram and the target bots.
 
-## Important limitation
+## Quick start
 
-This project automates a personal Telegram account, not a Bot API account. A
-Telethon session string grants account access and must be protected like a
-password. Random delays do not guarantee that Telegram or a destination bot
-will permit the automation. Use a private deployment, keep the target list
-small, and follow Telegram's terms and each bot's rules.
+1. Create a private deployment copy and review the [workflow](.github/workflows/main.yml).
+2. Obtain your Telegram application credentials and create a Telethon StringSession on a trusted machine.
+3. Add the settings below to **Settings → Secrets and variables → Actions**.
+4. Run **Telegram Auto Sign** and verify the conversations in Telegram.
 
-## How it works
+| Setting | Store as | Purpose |
+| --- | --- | --- |
+| `API_ID` | Secret | Telegram application ID |
+| `API_HASH` | Secret | Telegram application hash |
+| `SESSION_STRING` | Secret | User account StringSession |
+| `BOT_CONFIG` | Variable | Comma-separated `bot_username:command` entries |
 
-```text
-GitHub Actions daily schedule
-        │
-        ▼
-Telethon opens the configured user session
-        │
-        ▼
-commands sent to BOT_CONFIG targets in order
-        │
-        ▼
-run record appended on the logs branch
-```
-
-The workflow starts at `00:00 UTC` every day. The script waits a random 1–5
-minutes before connecting and 2–5 seconds between targets. These delays reduce
-burst traffic but are not an anti-abuse guarantee.
-
-Runs are serialized so that a delayed schedule or manual trigger cannot overlap
-another check-in. Each run is capped at 20 minutes to avoid leaving a stalled
-Telegram connection active indefinitely.
-
-## Configuration
-
-Add these repository secrets:
-
-| Secret | Purpose |
-| --- | --- |
-| `API_ID` | Telegram application ID from `my.telegram.org` |
-| `API_HASH` | Telegram application hash |
-| `SESSION_STRING` | Telethon StringSession credential for the user account |
-
-Add this repository variable:
-
-| Variable | Format |
-| --- | --- |
-| `BOT_CONFIG` | Comma-separated `bot_username:command` entries |
-
-Examples:
+Example target configuration:
 
 ```text
-@bot1:/qd,@bot2:sign
-@bot1:/qd,@bot2:sign,@bot3
+@example_bot:/qd,@another_bot:sign
 ```
 
-An entry without a command uses `/qd`. Commands are otherwise sent exactly as
-configured; the script does not add a leading slash.
+An entry without a command uses `/qd`. Other commands are sent as configured; no slash is added automatically. Never print a session string to public logs or generate it through an untrusted website.
 
-## Create a session string
+## Schedule and failures
 
-Install Telethon on a trusted local machine and use your own Telegram API
-credentials to create a StringSession. Never run a session-generation tool from
-an untrusted repository or website.
+The workflow runs daily at 00:00 UTC, with a random initial delay of 1–5 minutes and 2–5 seconds between targets. Runs are serialized and capped at 20 minutes. Delays do not guarantee that automation is permitted.
 
-After generating the value, store it only as the `SESSION_STRING` Actions
-secret. Do not paste it into workflow files, issues, logs, or screenshots.
+Target-specific errors allow later targets to run. Account errors, rate limits and uncertain transport outcomes stop the batch without automatic resending. Any failure produces a nonzero exit.
 
-## Deploy
+`checkin.log` on the `logs` branch records timestamps and counts, including partial runs. `submitted` means the send call returned; it does not prove the destination bot accepted a check-in. Updating this branch needs `contents: write` permission.
 
-1. Create a private fork or private copy for the account-specific deployment.
-2. Review `.github/workflows/main.yml` before adding credentials.
-3. Add `API_ID`, `API_HASH`, and `SESSION_STRING` as Actions secrets.
-4. Add `BOT_CONFIG` as an Actions variable.
-5. Confirm the workflow's `GITHUB_TOKEN` may write repository contents so it can
-   update the `logs` branch.
-6. Enable Actions and run **Telegram Auto Sign** manually.
-7. Verify the target bot conversations from Telegram.
+## Development
 
-The public source repository contains no account configuration. Keeping the
-deployment private reduces accidental disclosure through logs and future
-configuration changes.
-
-## Schedule and logs
-
-Edit the cron expression in `.github/workflows/main.yml` to change the schedule.
-GitHub Actions cron uses UTC and scheduled jobs may start late.
-
-Run records are stored in `checkin.log` on the `logs` branch, including partial
-runs that exit with an error. They contain only counts and a timestamp, not
-target usernames or commands. `submitted` means the send call returned, not
-that a destination bot accepted a check-in. Target-specific failures allow the
-next target to run; account/rate-limit failures and unknown transport outcomes
-stop the batch without automatic resending. Any failure keeps a nonzero exit.
-
-## Local validation
-
-Check Python syntax without connecting to Telegram:
+Use the Python version and Telethon dependency declared in the [offline test workflow](.github/workflows/offline-regression.yml), then run:
 
 ```bash
-python -m py_compile main.py
+python -m unittest discover -s tests
 ```
 
-Running `main.py` requires real credentials and sends real messages. Use a
-disposable account and test bot when integration testing is necessary.
+The tests mock Telegram access. Running `main.py` with real settings sends messages. If a send outcome is uncertain, check Telegram before rerunning. Revoke the session if its credential is exposed.
 
-## Security
+## Support and contributing
 
-- Treat `SESSION_STRING` as a full account credential.
-- Use a dedicated Telegram account with minimal access where practical.
-- Review every workflow change before approving it in a credentialed fork.
-- Keep Actions logs and artifacts free of session values and private chats.
-- Revoke active Telegram sessions immediately after suspected exposure.
-- Do not accept pull requests that print environment variables or session data.
-
-Follow [SECURITY.md](SECURITY.md) for vulnerability reports.
-
-## Contributing and support
-
-Read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting a change. See
-[SUPPORT.md](SUPPORT.md) for usage questions and bug reports. Participation is
-governed by [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+[Support](SUPPORT.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Code of conduct](CODE_OF_CONDUCT.md)
 
 ## License
 
-TelegramAutoSignBot is available under the [MIT License](LICENSE).
+[MIT](LICENSE).
