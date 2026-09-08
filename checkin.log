@@ -184,3 +184,4 @@
 [2026-09-05 09:56:42] Sent sign commands to @jdHappybot(/qd), @hongzhaji365_bot(/qd), @qingbaobu(签到) (start delay: 241s).
 [2026-09-06 09:51:01] Sent sign commands to @jdHappybot(/qd), @hongzhaji365_bot(/qd), @qingbaobu(签到) (start delay: 223s).
 [2026-09-07 09:48:38] Sent sign commands to @jdHappybot(/qd), @hongzhaji365_bot(/qd), @qingbaobu(签到) (start delay: 251s).
+{"attempted": 3, "disconnect_failed": false, "global_failed": 0, "kind": "command_submission", "not_attempted": 0, "send_unconfirmed": 0, "stopped": false, "submitted": 3, "target_failed": 0, "targets": 3, "time": "2026-09-08T09:58:38.525486+08:00"}
