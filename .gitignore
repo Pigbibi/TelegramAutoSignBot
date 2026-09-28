@@ -1,0 +1,7 @@
+# AI assistant / agent configs (local only)
+AGENTS.md
+CLAUDE.md
+.claude/
+.codex/
+.cursor/
+.cursorrules
