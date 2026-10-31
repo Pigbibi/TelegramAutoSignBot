@@ -5,3 +5,7 @@
 **/auth/** @Pigbibi
 **/security/** @Pigbibi
 **/deploy* @Pigbibi
+
+# Risk-sensitive changes require the repository owner.
+/.github/CODEOWNERS @Pigbibi
+/.github/workflows/ @Pigbibi
