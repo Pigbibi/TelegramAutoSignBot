@@ -39,6 +39,8 @@ python -m unittest discover -s tests
 
 ## 不要做
 
+- 只有所有者或经所有者明确授权的审查者可以添加 `owner-approved` 标签；编码智能体绝不能给自己的 PR 添加该标签。
+
 - 不要在代码、日志或 artifact 里输出 session 文件内容、API hash 或手机号。
 - 不要扩大目标 bot 列表。这个账号只向配置里列出的 bot 发命令。
 - 不要在测试里建立真实 Telegram 连接。
