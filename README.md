@@ -53,3 +53,5 @@ The tests mock Telegram access. Running `main.py` with real settings sends messa
 ## License
 
 [MIT](LICENSE).
+
+Run output is no longer committed to the public `logs` branch. Successful runs add only the last success time to the Actions summary. Existing branch history is unchanged.

@@ -53,3 +53,5 @@ python -m unittest discover -s tests
 ## 许可证
 
 [MIT](LICENSE)。
+
+运行输出不再提交到公开 `logs` 分支。成功执行时，公开的 Actions 摘要只新增最后成功时间。已有分支历史不会由此更改。
