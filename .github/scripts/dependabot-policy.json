@@ -1,7 +1,9 @@
 {
   "repo": "Pigbibi/TelegramAutoSignBot",
   "branch": "main",
-  "files": [],
+  "files": [
+    ".github/requirements-ci.txt"
+  ],
   "directories": [
     "/.github"
   ],
@@ -9,5 +11,14 @@
     "test",
     "Repository hygiene",
     "Safe dependency update"
+  ],
+  "action_files": [
+    ".github/workflows/dependabot-auto-merge.yml",
+    ".github/workflows/dependabot-policy.yml",
+    ".github/workflows/engineering-governance.yml",
+    ".github/workflows/main.yml",
+    ".github/workflows/offline-regression.yml",
+    ".github/workflows/repository-hygiene.yml",
+    ".github/workflows/risk-gate.yml"
   ]
 }
