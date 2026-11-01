@@ -24,3 +24,7 @@ Which AI tool and model were used? Write `None` if no AI was used.
 ## What changed
 
 Describe the change and its purpose.
+
+## Risk
+
+<!-- Record the risk tier, affected paths and relevant compatibility or operational impact. -->
