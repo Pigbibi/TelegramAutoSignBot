@@ -54,3 +54,14 @@ The tests mock Telegram access. Running `main.py` with real settings sends messa
 [MIT](LICENSE).
 
 Run output is no longer committed to the public `logs` branch. Successful runs add only the last success time to the Actions summary. Existing branch history is unchanged.
+
+## Weekly secret scan
+
+`Weekly all-branch secret scan` scans all branches and history on Mondays at
+04:23 UTC (12:23 Asia/Shanghai). GitHub schedules can be delayed or skipped; an
+active workflow alone does not prove a scan ran. Check the Actions run history
+and use `workflow_dispatch` when a scheduled run is missing.
+
+A successful `Secret scan / Gitleaks` job verifies the scanner completed. It
+does not run the application's account workflow. Findings retain paths and
+rule names only; never copy secret values into logs, issues or documentation.
