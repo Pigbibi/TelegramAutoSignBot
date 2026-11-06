@@ -11,6 +11,7 @@ Python，Telethon。`python -m unittest discover -s tests` 跑离线测试。
 ## 目录
 
 - `main.py` — 唯一入口。
+- `checkin.py` — 目标解析、发送结果分类与运行记录。
 - `tests/` — 离线测试。
 
 ## 本地验证
