@@ -34,7 +34,6 @@ The workflow runs daily at 00:00 UTC, with a random initial delay of 1–5 minut
 
 Target-specific errors allow later targets to run. Account errors, rate limits and uncertain transport outcomes stop the batch without automatic resending. Any failure produces a nonzero exit.
 
-`checkin.log` on the `logs` branch records timestamps and counts, including partial runs. `submitted` means the send call returned; it does not prove the destination bot accepted a check-in. Updating this branch needs `contents: write` permission.
 
 ## Development
 
@@ -53,6 +52,8 @@ The tests mock Telegram access. Running `main.py` with real settings sends messa
 ## License
 
 [MIT](LICENSE).
+
+Run output is no longer committed to the public `logs` branch. Successful runs add only the last success time to the Actions summary. Existing branch history is unchanged.
 
 ## Weekly secret scan
 
