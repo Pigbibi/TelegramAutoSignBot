@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: telegram-auto-sign
@@ -42,41 +42,7 @@ jobs:
           BOT_CONFIG: ${{ vars.BOT_CONFIG }}
         run: python main.py
 
-      - name: Prepare log for logs branch
-        id: log_prepare
-        if: ${{ !cancelled() && steps.checkin.outcome != 'skipped' }}
+      - name: Record last success time
+        if: success()
         run: |
-          test -f checkin.log || exit 0
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          
-          mv checkin.log temp_new_log.txt
-          
-          git fetch origin logs || true
-          
-          if git show-ref --verify --quiet refs/remotes/origin/logs; then
-            git checkout logs
-            git pull origin logs --rebase
-          else
-            git checkout --orphan logs
-            git rm -rf .
-          fi
-          
-          cat temp_new_log.txt >> checkin.log
-          
-          rm temp_new_log.txt
-          
-          git add checkin.log
-          git commit -m "Auto check-in log update: $(date +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
-          echo "ready=true" >> "$GITHUB_OUTPUT"
-
-      - name: Scan log publication
-        id: log_scan
-        if: ${{ !cancelled() && steps.checkin.outcome != 'skipped' && steps.log_prepare.outputs.ready == 'true' }}
-        uses: QuantStrategyLab/.github/actions/scan-before-publish@0da4da68433b803cda17d3f84e29875a94a32273
-        with:
-          path: checkin.log
-
-      - name: Publish log to logs branch
-        if: ${{ !cancelled() && steps.checkin.outcome != 'skipped' && steps.log_prepare.outputs.ready == 'true' && steps.log_scan.outcome == 'success' }}
-        run: git push origin logs
+          printf 'Last success: %s\n' "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_STEP_SUMMARY"
