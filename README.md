@@ -45,15 +45,7 @@ python -m unittest discover -s tests
 
 The tests mock Telegram access. Running `main.py` with real settings sends messages. If a send outcome is uncertain, check Telegram before rerunning. Revoke the session if its credential is exposed.
 
-## Support and contributing
-
-[Support](SUPPORT.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Code of conduct](CODE_OF_CONDUCT.md)
-
-## License
-
-[MIT](LICENSE).
-
-Run output is no longer committed to the public `logs` branch. Successful runs add only the last success time to the Actions summary. Existing branch history is unchanged.
+Successful workflow runs record only the last success timestamp in the Actions summary instead of writing run output to a public `logs` branch.
 
 ## Weekly secret scan
 
@@ -65,3 +57,11 @@ and use `workflow_dispatch` when a scheduled run is missing.
 A successful `Secret scan / Gitleaks` job verifies the scanner completed. It
 does not run the application's account workflow. Findings retain paths and
 rule names only; never copy secret values into logs, issues or documentation.
+
+## Support and contributing
+
+[Support](SUPPORT.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Code of conduct](CODE_OF_CONDUCT.md)
+
+## License
+
+[MIT](LICENSE).

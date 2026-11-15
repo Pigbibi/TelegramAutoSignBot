@@ -33,4 +33,4 @@ Use [SECURITY.md](SECURITY.md) for vulnerabilities and follow the
 
 ## AI 辅助维护
 
-维护流程、文档更新和交付核对见 [AI 辅助维护约定](.github/engineering.md)，项目约束见 [AGENTS.md](AGENTS.md)。
+项目约束、验证要求和提交流程见 [AGENTS.md](AGENTS.md)。

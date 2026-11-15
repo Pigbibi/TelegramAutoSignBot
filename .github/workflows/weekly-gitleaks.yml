@@ -12,6 +12,6 @@ permissions:
 jobs:
   secret-scan:
     name: Secret scan
-    uses: QuantStrategyLab/.github/.github/workflows/gitleaks.yml@0da4da68433b803cda17d3f84e29875a94a32273
+    uses: QuantStrategyLab/.github/.github/workflows/gitleaks.yml@34774d70ea239dd88ee92992c2bf87c8f86bac5f
     with:
       full-history: true
