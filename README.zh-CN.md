@@ -45,6 +45,14 @@ python -m unittest discover -s tests
 
 测试会模拟 Telegram 访问。使用真实配置运行 `main.py` 会发送消息。发送结果不明时，先检查 Telegram 再决定是否重跑；会话凭据泄露时撤销该会话。
 
+成功执行的工作流只在 Actions 摘要中记录最后成功时间，不向公开 `logs` 分支提交运行输出。
+
+## 每周密钥扫描
+
+`Weekly all-branch secret scan` 在每周一 04:23 UTC（北京时间 12:23）扫描全部分支和历史。GitHub 调度可能延迟或漏跑；工作流处于 active 不代表扫描已执行。请检查 Actions 运行历史，缺少定时运行时可用 `workflow_dispatch` 手动触发。
+
+`Secret scan / Gitleaks` 成功表示扫描器完成，不会执行应用的真实账户流程。发现问题时只保留路径和规则名，不把密钥值复制到日志、Issue 或文档。
+
 ## 支持与贡献
 
 [问题与支持](SUPPORT.md) · [贡献指南](CONTRIBUTING.md) · [安全问题](SECURITY.md) · [行为准则](CODE_OF_CONDUCT.md)
@@ -52,11 +60,3 @@ python -m unittest discover -s tests
 ## 许可证
 
 [MIT](LICENSE)。
-
-运行输出不再提交到公开 `logs` 分支。成功执行时，公开的 Actions 摘要只新增最后成功时间。已有分支历史不会由此更改。
-
-## 每周密钥扫描
-
-`Weekly all-branch secret scan` 在每周一 04:23 UTC（北京时间 12:23）扫描全部分支和历史。GitHub 调度可能延迟或漏跑；工作流处于 active 不代表扫描已执行。请检查 Actions 运行历史，缺少定时运行时可用 `workflow_dispatch` 手动触发。
-
-`Secret scan / Gitleaks` 成功表示扫描器完成，不会执行应用的真实账户流程。发现问题时只保留路径和规则名，不把密钥值复制到日志、Issue 或文档。
