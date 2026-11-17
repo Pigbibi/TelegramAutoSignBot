@@ -30,7 +30,7 @@ python -m unittest discover -s tests
 - 新增文档文件名小写、`-` 连接，中文版后缀 `.zh-CN.md`；`README.md`、`AGENTS.md` 等工具约定文件保留固定名称。源码沿用现有语言命名。
 - 不提交审计报告、复盘、交接单、进度快照、升级计划。要追溯看 commit 历史。
 - 改文件名时同一次提交改完所有引用。
-- 提交前跑 `python scripts/check_hygiene.py`。
+- 提交前由 `.github/workflows/repository-hygiene.yml` 调用 `Pigbibi/.github/actions/repository-hygiene` 检查仓库卫生；本地可用 `Pigbibi/.github` 仓库的 `scripts/check_hygiene.py --root .` 预检。
 
 <!-- repository-files:begin -->
 - 公开仓库（有 `LICENSE`）要有 `CONTRIBUTING.md`、`SECURITY.md`、`CODE_OF_CONDUCT.md` 和 issue / PR 模板；私有仓库至少要有 `SECURITY.md`。
