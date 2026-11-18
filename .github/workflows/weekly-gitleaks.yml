@@ -12,6 +12,7 @@ permissions:
 jobs:
   secret-scan:
     name: Secret scan
-    uses: QuantStrategyLab/.github/.github/workflows/gitleaks.yml@925d718e440bd5cc7c4537ffef2fd53a2f0e654d
+    uses: Pigbibi/PrGovernance/.github/workflows/gitleaks.yml@18ad203d889f7ebea267afacaf48c9c204718b42
+    secrets: inherit
     with:
       full-history: true
