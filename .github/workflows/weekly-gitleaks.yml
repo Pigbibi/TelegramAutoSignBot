@@ -12,7 +12,7 @@ permissions:
 jobs:
   secret-scan:
     name: Secret scan
-    uses: Pigbibi/PrGovernance/.github/workflows/gitleaks.yml@18ad203d889f7ebea267afacaf48c9c204718b42
+    uses: Pigbibi/PrGovernance/.github/workflows/gitleaks.yml@3d44e3d057681d5ae2730ad76af2f53b72d26767
     secrets: inherit
     with:
       full-history: true
